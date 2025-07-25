@@ -160,3 +160,4 @@ cython_debug/
 
 # Project specific
 /fit_dumps/
+test_venv/
