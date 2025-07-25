@@ -96,7 +96,7 @@ def test_monotony_with_daily_aggregation():
         date = f"2024-01-{i+1:02d}"
         dates.extend([date, date])
         distances.extend([2.5, 2.5])  # Two 2.5km runs per day
-    
+
     df = pd.DataFrame({"date": dates, "distance": distances})
 
     result = monotony(df, aggregate_daily=True, window=7)

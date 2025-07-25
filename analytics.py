@@ -71,12 +71,16 @@ def acwr(
 
     # Calculate rolling workloads
     if chronic_method == "mean":
-        acute_workload = series.rolling(window=acute_days, min_periods=min_periods).mean()
+        acute_workload = series.rolling(
+            window=acute_days, min_periods=min_periods
+        ).mean()
         chronic_workload = series.rolling(
             window=chronic_days, min_periods=min_periods
         ).mean()
     else:  # sum
-        acute_workload = series.rolling(window=acute_days, min_periods=min_periods).sum()
+        acute_workload = series.rolling(
+            window=acute_days, min_periods=min_periods
+        ).sum()
         chronic_workload = series.rolling(
             window=chronic_days, min_periods=min_periods
         ).sum()
@@ -149,7 +153,9 @@ def monotony(
     # Calculate monotony, handling divide-by-zero
     # When std is 0 (perfectly consistent), set a very high monotony value
     with pd.option_context("mode.use_inf_as_na", True):
-        monotony_series = rolling_mean / rolling_std.replace(0, 1e-10)  # Avoid division by zero
+        monotony_series = rolling_mean / rolling_std.replace(
+            0, 1e-10
+        )  # Avoid division by zero
 
     # Remove infinite and NaN values
     monotony_series = monotony_series.replace(

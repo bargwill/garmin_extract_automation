@@ -163,11 +163,17 @@ def main(args: Optional[list] = None) -> None:
             metrics = get_workout_metrics(data, return_series=False)
 
             # Log metrics summary
-            acwr_str = f"{metrics.get('acwr'):.3f}" if metrics.get('acwr') is not None else 'N/A'
-            monotony_str = f"{metrics.get('monotony'):.3f}" if metrics.get('monotony') is not None else 'N/A'
-            logger.info(
-                f"Calculated metrics: ACWR={acwr_str}, Monotony={monotony_str}"
+            acwr_str = (
+                f"{metrics.get('acwr'):.3f}"
+                if metrics.get("acwr") is not None
+                else "N/A"
             )
+            monotony_str = (
+                f"{metrics.get('monotony'):.3f}"
+                if metrics.get("monotony") is not None
+                else "N/A"
+            )
+            logger.info(f"Calculated metrics: ACWR={acwr_str}, Monotony={monotony_str}")
 
             # Send Slack notification if enabled and configured
             if not parsed_args.skip_slack:
