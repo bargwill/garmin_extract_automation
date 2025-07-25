@@ -20,17 +20,17 @@ logger = logging.getLogger(__name__)
 def send_slack_message(text: str, blocks: Optional[list] = None) -> bool:
     """
     Send a message to Slack using the configured webhook URL.
-    
+
     Args:
         text: The message text to send to Slack.
         blocks: Optional Slack Block Kit blocks for rich formatting.
-        
+
     Returns:
         True if message was sent successfully, False otherwise.
-        
+
     Raises:
         RuntimeError: If SLACK_WEBHOOK is not configured.
-        
+
     Example:
         >>> success = send_slack_message("Hello from Garmin automation!")
         >>> if success:
@@ -41,23 +41,23 @@ def send_slack_message(text: str, blocks: Optional[list] = None) -> bool:
     except RuntimeError as e:
         logger.error(f"Slack not configured: {e}")
         raise
-    
+
     webhook = WebhookClient(webhook_url)
-    
+
     try:
         payload = {"text": text}
         if blocks:
             payload["blocks"] = blocks
-            
+
         response = webhook.send(**payload)
-        
+
         if response.status_code == 200:
             logger.info("Slack message sent successfully")
             return True
         else:
             logger.error(f"Slack API error {response.status_code}: {response.body}")
             return False
-            
+
     except SlackApiError as e:
         logger.error(f"Slack API error: {e.response['error']}")
         return False
@@ -69,16 +69,16 @@ def send_slack_message(text: str, blocks: Optional[list] = None) -> bool:
 def format_metrics_message(metrics: Dict[str, Any]) -> str:
     """
     Format workout metrics into a readable Slack message.
-    
+
     Args:
         metrics: Dictionary containing workout metrics.
-        
+
     Returns:
         Formatted message string for Slack.
     """
     if metrics.get("error"):
         return f"⚠️ Workout Sync Error: {metrics['error']}"
-    
+
     # Format numbers safely
     def format_number(value: Any, decimals: int = 2) -> str:
         try:
@@ -87,7 +87,7 @@ def format_metrics_message(metrics: Dict[str, Any]) -> str:
             return f"{float(value):.{decimals}f}"
         except (ValueError, TypeError):
             return "N/A"
-    
+
     message_parts = [
         "🏃 *Workout Analytics Summary*",
         "",
@@ -101,34 +101,38 @@ def format_metrics_message(metrics: Dict[str, Any]) -> str:
         f"• Avg Daily Distance: {format_number(metrics.get('avg_daily_distance'), 1)} km",
         f"• Days with Data: {metrics.get('days_with_data', 0)}",
     ]
-    
+
     # Add interpretation if ACWR is available
-    acwr = metrics.get('acwr')
+    acwr = metrics.get("acwr")
     if acwr is not None:
         try:
             acwr_val = float(acwr)
             if acwr_val < ACWR_LOW_THRESHOLD:
                 message_parts.append("")
-                message_parts.append("🔵 *Training Status:* Low training load - consider increasing")
+                message_parts.append(
+                    "🔵 *Training Status:* Low training load - consider increasing"
+                )
             elif acwr_val > ACWR_HIGH_THRESHOLD:
                 message_parts.append("")
-                message_parts.append("🔴 *Training Status:* High training load - consider recovery")
+                message_parts.append(
+                    "🔴 *Training Status:* High training load - consider recovery"
+                )
             else:
                 message_parts.append("")
                 message_parts.append("🟢 *Training Status:* Optimal training load")
         except (ValueError, TypeError):
             pass
-    
+
     return "\n".join(message_parts)
 
 
 def create_metrics_blocks(metrics: Dict[str, Any]) -> list:
     """
     Create Slack Block Kit blocks for rich metric formatting.
-    
+
     Args:
         metrics: Dictionary containing workout metrics.
-        
+
     Returns:
         List of Slack Block Kit blocks.
     """
@@ -138,56 +142,57 @@ def create_metrics_blocks(metrics: Dict[str, Any]) -> list:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"⚠️ *Workout Sync Error*\n{metrics['error']}"
-                }
+                    "text": f"⚠️ *Workout Sync Error*\n{metrics['error']}",
+                },
             }
         ]
-    
+
     blocks = [
         {
             "type": "header",
-            "text": {
-                "type": "plain_text",
-                "text": "🏃 Workout Analytics Summary"
-            }
+            "text": {"type": "plain_text", "text": "🏃 Workout Analytics Summary"},
         },
         {
             "type": "section",
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": f"*ACWR:*\n{metrics.get('acwr', 'N/A'):.3f}" if metrics.get('acwr') else "*ACWR:*\nN/A"
-                },
-                {
-                    "type": "mrkdwn", 
-                    "text": f"*Monotony:*\n{metrics.get('monotony', 'N/A'):.3f}" if metrics.get('monotony') else "*Monotony:*\nN/A"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Total Distance:*\n{metrics.get('total_distance', 0):.1f} km"
+                    "text": f"*ACWR:*\n{metrics.get('acwr', 'N/A'):.3f}"
+                    if metrics.get("acwr")
+                    else "*ACWR:*\nN/A",
                 },
                 {
                     "type": "mrkdwn",
-                    "text": f"*Days Active:*\n{metrics.get('days_with_data', 0)}"
-                }
-            ]
-        }
+                    "text": f"*Monotony:*\n{metrics.get('monotony', 'N/A'):.3f}"
+                    if metrics.get("monotony")
+                    else "*Monotony:*\nN/A",
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Total Distance:*\n{metrics.get('total_distance', 0):.1f} km",
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Days Active:*\n{metrics.get('days_with_data', 0)}",
+                },
+            ],
+        },
     ]
-    
+
     return blocks
 
 
 def notify_slack(metrics: Dict[str, Any], use_blocks: bool = True) -> bool:
     """
     Send workout metrics notification to Slack.
-    
+
     Args:
         metrics: Dictionary containing calculated workout metrics.
         use_blocks: Whether to use rich Block Kit formatting.
-        
+
     Returns:
         True if notification was sent successfully, False otherwise.
-        
+
     Example:
         >>> metrics = {"acwr": 1.2, "monotony": 2.1, "total_distance": 45.5}
         >>> success = notify_slack(metrics)
@@ -200,7 +205,7 @@ def notify_slack(metrics: Dict[str, Any], use_blocks: bool = True) -> bool:
         else:
             message = format_metrics_message(metrics)
             return send_slack_message(message)
-            
+
     except RuntimeError:
         # Slack not configured - this is expected in some environments
         logger.info("Slack notifications not configured, skipping...")

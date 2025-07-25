@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9, 3.10, 3.11, 3.12]
+        python-version: [3.8, 3.9, "3.10", 3.11]
       fail-fast: false
     
     steps:
@@ -41,7 +41,7 @@ jobs:
       
       - name: Run tests with coverage
         run: |
-          pytest --maxfail=1 --disable-warnings -q --cov=. --cov-report=xml --cov-report=term
+          PYTHONPATH=. pytest --maxfail=1 --disable-warnings -q --cov=. --cov-report=xml --cov-report=term
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -136,12 +136,12 @@ jobs:
       
       - name: Test analytics module import
         run: |
-          python -c "from analytics import acwr, monotony, get_workout_metrics; print('Analytics module imports successfully')"
+          PYTHONPATH=. python -c "from analytics import acwr, monotony, get_workout_metrics; print('Analytics module imports successfully')"
       
       - name: Generate test coverage report
         run: |
           pip install pytest pytest-cov
-          pytest --cov=. --cov-report=html
+          PYTHONPATH=. pytest --cov=. --cov-report=html
       
       - name: Upload test coverage artifacts
         uses: actions/upload-artifact@v3

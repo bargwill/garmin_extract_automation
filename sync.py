@@ -28,8 +28,7 @@ from slack_notify import notify_slack
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -37,11 +36,11 @@ logger = logging.getLogger(__name__)
 def write_csv(data: pd.DataFrame, path: str) -> None:
     """
     Write DataFrame to CSV file.
-    
+
     Args:
         data: DataFrame containing workout data
         path: Output file path for CSV
-        
+
     Raises:
         IOError: If file cannot be written
     """
@@ -51,7 +50,9 @@ def write_csv(data: pd.DataFrame, path: str) -> None:
             logger.info(f"Successfully wrote {len(data)} records to {path}")
         else:
             # Create empty CSV with headers for consistency
-            pd.DataFrame(columns=['date', 'distance', 'duration']).to_csv(path, index=False)
+            pd.DataFrame(columns=["date", "distance", "duration"]).to_csv(
+                path, index=False
+            )
             logger.warning(f"No data to write, created empty CSV at {path}")
     except Exception as e:
         logger.error(f"Failed to write CSV to {path}: {e}")
@@ -61,112 +62,113 @@ def write_csv(data: pd.DataFrame, path: str) -> None:
 def parse_date(date_str: str) -> datetime:
     """
     Parse date string in YYYY-MM-DD format.
-    
+
     Args:
         date_str: Date string in YYYY-MM-DD format
-        
+
     Returns:
         Parsed datetime object
-        
+
     Raises:
         ValueError: If date string is invalid
     """
     try:
-        return datetime.strptime(date_str, '%Y-%m-%d')
+        return datetime.strptime(date_str, "%Y-%m-%d")
     except ValueError as e:
-        raise ValueError(f"Invalid date format '{date_str}'. Use YYYY-MM-DD format.") from e
+        raise ValueError(
+            f"Invalid date format '{date_str}'. Use YYYY-MM-DD format."
+        ) from e
 
 
 def parse_args(args: Optional[list] = None) -> argparse.Namespace:
     """
     Parse command line arguments.
-    
+
     Args:
         args: Optional list of arguments (for testing)
-        
+
     Returns:
         Parsed arguments namespace
     """
     parser = argparse.ArgumentParser(
         description="Sync Garmin workout data and generate analytics",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "--output", 
-        default=DEFAULT_CSV_FILENAME, 
-        help="Output CSV file path"
+        "--output", default=DEFAULT_CSV_FILENAME, help="Output CSV file path"
     )
     parser.add_argument(
-        "--start-date", 
-        type=str, 
-        help="Start date for fetching workouts (YYYY-MM-DD format)"
+        "--start-date",
+        type=str,
+        help="Start date for fetching workouts (YYYY-MM-DD format)",
     )
     parser.add_argument(
-        "--end-date", 
-        type=str, 
-        help="End date for fetching workouts (YYYY-MM-DD format)"
+        "--end-date",
+        type=str,
+        help="End date for fetching workouts (YYYY-MM-DD format)",
     )
     parser.add_argument(
-        "--skip-slack",
-        action="store_true",
-        help="Skip Slack notifications"
+        "--skip-slack", action="store_true", help="Skip Slack notifications"
     )
     parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Enable verbose logging"
+        "--verbose", "-v", action="store_true", help="Enable verbose logging"
     )
-    
+
     return parser.parse_args(args)
 
 
 def main(args: Optional[list] = None) -> None:
     """
     Main CLI entry point.
-    
+
     Args:
         args: Optional list of arguments (for testing)
-        
+
     Raises:
         SystemExit: On configuration or runtime errors
     """
     try:
         parsed_args = parse_args(args)
-        
+
         # Configure logging level
         if parsed_args.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
-        
+
         logger.info("Starting Garmin data sync...")
-        
+
         # Parse date arguments if provided
         start_date, end_date = None, None
         if parsed_args.start_date:
             start_date = parse_date(parsed_args.start_date)
         if parsed_args.end_date:
             end_date = parse_date(parsed_args.end_date)
-        
+
         # Use defaults if not specified
         if start_date is None or end_date is None:
             start_date, end_date = default_dates()
-            logger.info(f"Using default date range: {start_date.date()} to {end_date.date()}")
-        
+            logger.info(
+                f"Using default date range: {start_date.date()} to {end_date.date()}"
+            )
+
         # Fetch workout data
         logger.info("Fetching workout data from Garmin...")
         data = fetch_workouts(start_date, end_date)
-        
+
         if data is not None and not data.empty:
             # Validate data structure
             validate_dataframe(data)
-            
+
             # Calculate analytics
             logger.info("Calculating workout metrics...")
-            metrics = get_workout_metrics(data)
-            
+            metrics = get_workout_metrics(data, return_series=False)
+
             # Log metrics summary
-            logger.info(f"Calculated metrics: ACWR={metrics.get('acwr'):.3f if metrics.get('acwr') else 'N/A'}, "
-                       f"Monotony={metrics.get('monotony'):.3f if metrics.get('monotony') else 'N/A'}")
-            
+            acwr_str = f"{metrics.get('acwr'):.3f}" if metrics.get('acwr') is not None else 'N/A'
+            monotony_str = f"{metrics.get('monotony'):.3f}" if metrics.get('monotony') is not None else 'N/A'
+            logger.info(
+                f"Calculated metrics: ACWR={acwr_str}, Monotony={monotony_str}"
+            )
+
             # Send Slack notification if enabled and configured
             if not parsed_args.skip_slack:
                 try:
@@ -177,12 +179,12 @@ def main(args: Optional[list] = None) -> None:
         else:
             logger.warning("No workout data retrieved")
             metrics = {"error": "No data available"}
-        
+
         # Write CSV output
         write_csv(data, parsed_args.output)
-        
+
         logger.info("Sync completed successfully")
-        
+
     except KeyboardInterrupt:
         logger.info("Sync interrupted by user")
         sys.exit(1)
@@ -192,4 +194,4 @@ def main(args: Optional[list] = None) -> None:
 
 
 if __name__ == "__main__":
-    main() 
+    main()
