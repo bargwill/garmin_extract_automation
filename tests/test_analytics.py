@@ -4,16 +4,16 @@ Unit tests for analytics functions.
 Tests ACWR, monotony calculations, and data validation with known inputs.
 """
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 from analytics import (
     acwr,
-    monotony,
-    get_workout_metrics,
-    validate_dataframe,
     create_sample_data,
+    get_workout_metrics,
+    monotony,
+    validate_dataframe,
 )
 
 

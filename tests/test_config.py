@@ -3,15 +3,16 @@ Unit tests for configuration management.
 """
 
 import os
-import pytest
 from unittest.mock import patch
 
+import pytest
+
 from config import (
+    default_dates,
+    get_config_summary,
     get_garmin_credentials,
     get_slack_webhook,
-    default_dates,
     is_configured,
-    get_config_summary,
 )
 
 

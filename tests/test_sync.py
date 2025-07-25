@@ -6,11 +6,12 @@ Tests CLI parsing, end-to-end workflow, and CSV output generation.
 
 import os
 import tempfile
-from unittest.mock import patch, MagicMock
-import pytest
-import pandas as pd
+from unittest.mock import MagicMock, patch
 
-from sync import parse_args, main
+import pandas as pd
+import pytest
+
+from sync import main, parse_args
 
 
 def test_parse_args_defaults():

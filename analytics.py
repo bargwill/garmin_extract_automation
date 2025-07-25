@@ -10,8 +10,9 @@ This module provides functions to calculate key training load metrics including:
 The metrics help monitor training load and injury risk patterns.
 """
 
-import pandas as pd
 from typing import Optional, Union
+
+import pandas as pd
 
 # Constants for default metric calculations
 DEFAULT_ACUTE_DAYS = 7

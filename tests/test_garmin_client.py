@@ -2,17 +2,18 @@
 Unit tests for Garmin client functionality.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
 from datetime import datetime
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
+import pytest
 
 from garmin_client import (
-    fetch_workouts,
-    convert_to_dataframe,
     _parse_garmin_date,
     _safe_float,
     _safe_int,
+    convert_to_dataframe,
+    fetch_workouts,
 )
 
 

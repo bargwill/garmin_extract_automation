@@ -7,12 +7,12 @@ converting raw activity data into pandas DataFrames for analysis.
 
 import logging
 from datetime import datetime
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 from garminconnect import Garmin
 
-from config import get_garmin_credentials, default_dates
+from config import default_dates, get_garmin_credentials
 
 logger = logging.getLogger(__name__)
 

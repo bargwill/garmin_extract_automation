@@ -8,10 +8,10 @@ via incoming webhooks, with robust error handling and logging.
 import logging
 from typing import Any, Dict, Optional
 
-from slack_sdk.webhook import WebhookClient
 from slack_sdk.errors import SlackApiError
+from slack_sdk.webhook import WebhookClient
 
-from __init__ import ACWR_LOW_THRESHOLD, ACWR_HIGH_THRESHOLD
+from __init__ import ACWR_HIGH_THRESHOLD, ACWR_LOW_THRESHOLD
 from config import get_slack_webhook
 
 logger = logging.getLogger(__name__)

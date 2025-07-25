@@ -2,14 +2,15 @@
 Unit tests for Slack notification functionality.
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 from slack_notify import (
-    send_slack_message,
-    format_metrics_message,
     create_metrics_blocks,
+    format_metrics_message,
     notify_slack,
+    send_slack_message,
 )
 
 
