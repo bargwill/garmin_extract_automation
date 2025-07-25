@@ -4,12 +4,23 @@ import argparse
 import os
 import pandas as pd
 from dotenv import load_dotenv
-from garminconnect import GarminConnect
+from garminconnect import Garmin
 
 
 def fetch_workouts():
     """Stub for Garmin API logic"""
-    pass
+    # TODO: Implement real Garmin API calls
+    # Example usage:
+    # load_dotenv()
+    # user = os.getenv("GARMIN_USER")
+    # pwd = os.getenv("GARMIN_PASS")
+    # api = Garmin(user, pwd)
+    # api.login()
+    # activities = api.get_activities()
+    # return activities
+    
+    # For now, return empty DataFrame for testing
+    return []
 
 
 def write_csv(data, path):
