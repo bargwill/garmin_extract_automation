@@ -3,7 +3,7 @@
 Training analytics module for calculating workout metrics.
 
 This module provides functions to calculate key training load metrics including:
-- ACWR (Acute:Chronic Workload Ratio) 
+- ACWR (Acute:Chronic Workload Ratio)
 - Monotony index
 - General workout statistics
 

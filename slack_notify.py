@@ -157,15 +157,19 @@ def create_metrics_blocks(metrics: Dict[str, Any]) -> list:
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": f"*ACWR:*\n{metrics.get('acwr', 'N/A'):.3f}"
-                    if metrics.get("acwr")
-                    else "*ACWR:*\nN/A",
+                    "text": (
+                        f"*ACWR:*\n{metrics.get('acwr', 'N/A'):.3f}"
+                        if metrics.get("acwr")
+                        else "*ACWR:*\nN/A"
+                    ),
                 },
                 {
                     "type": "mrkdwn",
-                    "text": f"*Monotony:*\n{metrics.get('monotony', 'N/A'):.3f}"
-                    if metrics.get("monotony")
-                    else "*Monotony:*\nN/A",
+                    "text": (
+                        f"*Monotony:*\n{metrics.get('monotony', 'N/A'):.3f}"
+                        if metrics.get("monotony")
+                        else "*Monotony:*\nN/A"
+                    ),
                 },
                 {
                     "type": "mrkdwn",
