@@ -221,3 +221,33 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - [python-garminconnect](https://github.com/cyberjunky/python-garminconnect) - Garmin Connect API wrapper
 - [Slack SDK](https://github.com/slackapi/python-slack-sdk) - Slack integration
+
+
+## 🔧 Development Setup
+
+This project includes automated formatting and linting tools:
+- **Python formatting**: Uses `black` for consistent code style
+- **Import sorting**: Uses `isort` for organized imports  
+- **Type hints**: Encourages type annotations for better code quality
+- **Documentation**: Comprehensive docstrings and comments
+
+### Quick Start
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run formatting (if available)
+python -m black .
+python -m isort .
+
+# Run tests
+pytest
+```
+
+### Code Quality Tools
+- **Linting**: Use `flake8` or `pylint` for code analysis
+- **Type Checking**: Use `mypy` for static type checking
+- **Testing**: Use `pytest` with coverage reporting
+
+---
+*Updated by automated cleanup process on 2025-07-29T21:53:32.551Z*
