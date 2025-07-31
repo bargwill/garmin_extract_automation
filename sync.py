@@ -24,10 +24,13 @@ except ImportError:
     # python-dotenv not installed, continue without it
     pass
 
-# Configuration constants - use environment variables with fallbacks
-GARMIN_EMAIL = os.getenv('GARMIN_EMAIL', 'bargwill@gmail.com')
-GARMIN_PASSWORD = os.getenv('GARMIN_PASSWORD', 'tuxJyz-nastib-bubfu5')
+# Configuration constants - use environment variables
+GARMIN_EMAIL = os.getenv('GARMIN_EMAIL', None)
+GARMIN_PASSWORD = os.getenv('GARMIN_PASSWORD', None)
 
+# Validate that required credentials are provided
+if not GARMIN_EMAIL or not GARMIN_PASSWORD:
+    raise ValueError("GARMIN_EMAIL and GARMIN_PASSWORD must be set as environment variables.")
 # Date range for data extraction
 START_DATE = os.getenv('START_DATE', "2025-07-25")
 END_DATE = os.getenv('END_DATE', "2025-07-31")
