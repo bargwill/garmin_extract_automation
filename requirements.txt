@@ -1,2 +1,7 @@
-# Minimal requirements for Garmin Connect data extraction
-# Add dependencies as needed
+# Garmin Connect Data Extraction Tool Dependencies
+
+# Core Garmin Connect API library
+garminconnect==0.2.28
+
+# Optional: Environment variable management (recommended for security)
+python-dotenv==1.0.0
