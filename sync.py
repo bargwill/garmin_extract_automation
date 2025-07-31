@@ -39,7 +39,7 @@ END_DATE = os.getenv('END_DATE', "2025-07-31")
 OUTPUT_FILE = os.getenv('OUTPUT_FILE', "running_activities.json")
 
 # Conversion constants
-METERS_TO_MILES = 1609.34
+METERS_TO_MILES = 1609.344
 
 
 def authenticate_garmin():
