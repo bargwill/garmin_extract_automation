@@ -9,6 +9,15 @@ venv/
 .venv/
 .env
 
+# Output files
+*.json
+running_activities*.json
+
+# Security - Never commit credentials
+.env
+.env.local
+.env.production
+
 # Distribution / packaging
 .Python
 build/
