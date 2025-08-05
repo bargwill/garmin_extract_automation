@@ -1,17 +1,59 @@
 # Garmin Connect Data Extraction Tool
 
-A modular Python tool that authenticates with Garmin Connect and extracts comprehensive running activity data. Exports detailed metrics including workout segments to JSON format for analysis and visualization.
+A modular Python tool that authenticates with Garmin Connect and extracts comprehensive running activity data with **enhanced segment-level metrics**. Exports detailed data including 30+ per-segment fields to JSON format for advanced analysis and AI-powered insights.
 
-## Features
+## ✨ Enhanced Features
 
-- **Modular Architecture**: Clean separation of concerns with core business logic and CLI interface
-- **Comprehensive Data**: Extracts key running metrics including pace, distance, heart rate, cadence, and workout segments
-- **Workout Segments**: Detailed segment analysis from split summaries (warmup, active, recovery, cooldown)
-- **Secure Authentication**: Uses environment variables for credentials
-- **Flexible Date Ranges**: Configurable start and end dates for data extraction
-- **JSON Export**: Clean, structured output format for easy analysis
-- **Error Handling**: Robust error handling for network and authentication issues
-- **Programmatic Access**: Can be imported and used as a Python package
+- **🏃‍♂️ Comprehensive Segment Data**: 30+ metrics per workout segment including:
+  - **Performance**: pace, speed, distance, duration (moving/total)
+  - **Physiological**: heart rate (avg/min/max), cadence, power
+  - **Running Dynamics**: stride length, ground contact time, vertical oscillation
+  - **Environmental**: temperature, elevation gain/loss
+  - **Energy**: calories burned per segment
+- **🏗️ Modular Architecture**: Clean separation with core business logic and CLI interface
+- **🔒 Secure Authentication**: Environment variable-based credential management
+- **📅 Flexible Date Ranges**: Configurable extraction periods
+- **📊 Rich JSON Export**: Structured output with metadata for easy analysis
+- **🔄 Dual Extraction Modes**: Basic (fast) vs Enhanced (detailed segment data)
+- **🛡️ Robust Error Handling**: Network and authentication resilience
+- **📦 Programmatic Access**: Import as Python package for custom workflows
+
+## Data Output
+
+### Enhanced Segment Metrics
+
+Each workout segment now includes comprehensive data:
+
+```json
+{
+  "segment_index": 3,
+  "type": "active",
+  "duration_sec": 284.23,
+  "distance_mi": 0.5,
+  "avg_pace_sec_per_mi": 568.27,
+  "min_pace_sec_per_mi": 547.58,
+  "avg_hr_bpm": 157.0,
+  "max_hr_bpm": 161.0,
+  "avg_cadence_spm": 160.015625,
+  "avg_stride_length_m": 1.059,
+  "avg_ground_contact_time_ms": 282.2,
+  "avg_vertical_oscillation_cm": 9.11,
+  "avg_power_watts": 401.0,
+  "elevation_gain_ft": 16.4,
+  "avg_temperature_f": 75.2,
+  "calories": 78.0
+  // ... and 15+ more fields
+}
+```
+
+### Perfect for AI Analysis
+
+The enhanced data enables sophisticated analysis with ChatGPT or other AI tools:
+- 🏃‍♂️ **Pacing strategy optimization**
+- 📈 **Running form analysis and improvement**
+- 🔋 **Fatigue detection and training load management**
+- 🌡️ **Environmental impact on performance**
+- 📊 **Segment-by-segment efficiency tracking**
 
 ## Quick Start
 
@@ -30,11 +72,15 @@ copy .env.example .env
 ```
 
 Edit `.env` and add your credentials:
-```
+```bash
 GARMIN_EMAIL=your-email@gmail.com
 GARMIN_PASSWORD=your-password
-START_DATE=2025-07-25
-END_DATE=2025-07-31
+START_DATE=2025-08-01
+END_DATE=2025-08-31
+
+# Enhanced extraction settings (optional)
+USE_DETAILED_SEGMENTS=true    # Enable 30+ segment metrics (default: true)
+INCLUDE_METADATA=true         # Include extraction metadata (default: true)
 ```
 
 ### 3. Run the Tool
