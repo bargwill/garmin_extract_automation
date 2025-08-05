@@ -23,29 +23,28 @@ from . import core
 def setup_logging():
     """Configure basic logging for the application."""
     logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
 
 def main():
     """
     Main entry point for the command-line interface.
-    
+
     Orchestrates the complete data extraction workflow by calling functions
     from the core module in the proper sequence.
-    
+
     Returns:
         int: Exit code (0 for success, 1 for failure)
     """
     # Set up logging
     setup_logging()
-    
+
     try:
         # Load configuration and run extraction
         config = core.Config()
         return core.run_extraction(config)
-    
+
     except Exception as error:
         print(f"Failed to initialize application: {error}")
         return 1
